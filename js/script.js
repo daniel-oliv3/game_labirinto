@@ -35,6 +35,7 @@
 	
 	//renderização (desenha na tela)
 	function render(){
+        ctx.save();
 		//procedimento que varre as linhas e colunas do labirinto
 		for(var row in maze){
 			for(var column in maze){
@@ -52,7 +53,9 @@
 		}
 
         //personagem
+        ctx.fillStyle = "#00f";
         ctx.fillRect(34,34,28,28);
+        ctx.restore();
 	}
 	
 	function loop(){
