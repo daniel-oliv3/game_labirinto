@@ -50,6 +50,9 @@
 				}
 			}
 		}
+
+        //personagem
+        ctx.fillRect(34,34,28,28);
 	}
 	
 	function loop(){
