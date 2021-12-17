@@ -12,6 +12,8 @@
 	//tamanho dos blocos
 	var tileSize = 32;
 
+	var walls = [];
+
 	//Personagem
 	var player = {
 		x: tileSize + 2,
@@ -44,6 +46,21 @@
 		[1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	];
+
+	for(var row in maze){
+		for(var column in maze){
+			var tile = maze[row][column];
+			if(tile === 1){
+				var wall = {
+					x: tileSize*column,
+					y: tileSize*row,
+					width: tileSize,
+					height: tileSize
+				};
+				walls.push(wall);
+			}
+		}
+	}
 
 	window.addEventListener("keydown", keydownHandler, false);
 	window.addEventListener("keyup", keyupHandler, false);
@@ -97,6 +114,12 @@
 		}else
 		if(mvDown && !mvUp){
 			player.y += player.speed;
+		}
+
+		//verificando colizão
+		for(var i in walls){
+			var wall = walls[i];
+			blockRectangle(player.wall);
 		}
 	}
 	
