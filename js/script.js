@@ -3,7 +3,7 @@
 	var cnv = document.querySelector("canvas");
 	var ctx = cnv.getContext("2d");
 
-	var WIDTH = cnv;
+	var WIDTH = cnv.width, HEIGHT = cnv.height;
 
 	//movimentação do personagem
 	var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
@@ -102,7 +102,7 @@
 	
 	//renderização (desenha na tela)
 	function render(){
-		ctx.clearRect();
+		ctx.clearRect(0,0,WIDTH, HEIGHT);
         ctx.save();
 		//procedimento que varre as linhas e colunas do labirinto
 		for(var row in maze){
