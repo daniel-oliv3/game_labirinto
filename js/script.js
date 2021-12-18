@@ -60,6 +60,13 @@
 			}
 		}
 	}
+
+	var cam = {
+		x: 0,
+		y: 0,
+		width: WIDTH,
+		height: HEIGHT,
+	}
 	
 	//função que verifica as colisões e ajusta a posição do personagem bloqueando-o 
 	function blockRectangle(objA,objB){
