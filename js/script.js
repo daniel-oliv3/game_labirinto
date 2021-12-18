@@ -1,20 +1,17 @@
 (function(){
-	//elemento canvas e contexto de renderização
 	var cnv = document.querySelector("canvas");
 	var ctx = cnv.getContext("2d");
-
+	
 	var WIDTH = cnv.width, HEIGHT = cnv.height;
-
-	//movimentação do personagem
+	
 	var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
 	var mvLeft = mvUp = mvRight = mvDown = false;
 	
-	//tamanho dos blocos
-	var tileSize = 32;
-
+	var tileSize = 64;
+	
+	//array que armazenará os muros do labirinto
 	var walls = [];
-
-	//Personagem
+	
 	var player = {
 		x: tileSize + 2,
 		y: tileSize + 2,
@@ -23,7 +20,6 @@
 		speed: 2
 	};
 	
-	//mapa do labirinto
 	var maze = [
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 		[1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
@@ -46,10 +42,12 @@
 		[1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	];
-
+	
+	//método de preenchimento do array com os muros do labirinto
 	for(var row in maze){
-		for(var column in maze){
+		for(var column in maze[row]){
 			var tile = maze[row][column];
+			//identificação e criação do objeto muro
 			if(tile === 1){
 				var wall = {
 					x: tileSize*column,
@@ -57,33 +55,35 @@
 					width: tileSize,
 					height: tileSize
 				};
+				//inserção no array
 				walls.push(wall);
 			}
 		}
 	}
-
-	function blockRectangle(objA, objB){
+	
+	//função que verifica as colisões e ajusta a posição do personagem bloqueando-o 
+	function blockRectangle(objA,objB){
 		var distX = (objA.x + objA.width/2) - (objB.x + objB.width/2);
 		var distY = (objA.y + objA.height/2) - (objB.y + objB.height/2);
-
+		
 		var sumWidth = (objA.width + objB.width)/2;
 		var sumHeight = (objA.height + objB.height)/2;
-
+		
 		if(Math.abs(distX) < sumWidth && Math.abs(distY) < sumHeight){
 			var overlapX = sumWidth - Math.abs(distX);
 			var overlapY = sumHeight - Math.abs(distY);
-
+			
 			if(overlapX > overlapY){
 				objA.y = distY > 0 ? objA.y + overlapY : objA.y - overlapY;
-			}else {
+			} else {
 				objA.x = distX > 0 ? objA.x + overlapX : objA.x - overlapX;
 			}
 		}
 	}
-
-	window.addEventListener("keydown", keydownHandler, false);
-	window.addEventListener("keyup", keyupHandler, false);
-
+	
+	window.addEventListener("keydown",keydownHandler,false);
+	window.addEventListener("keyup",keyupHandler,false);
+	
 	function keydownHandler(e){
 		var key = e.keyCode;
 		switch(key){
@@ -98,10 +98,10 @@
 				break;
 			case DOWN:
 				mvDown = true;
-				break;		
+				break;
 		}
 	}
-
+	
 	function keyupHandler(e){
 		var key = e.keyCode;
 		switch(key){
@@ -116,51 +116,46 @@
 				break;
 			case DOWN:
 				mvDown = false;
-				break;		
+				break;
 		}
 	}
-
-    //atualização cíclica do programa
+	
 	function update(){
 		if(mvLeft && !mvRight){
 			player.x -= player.speed;
-		}else
+		} else 
 		if(mvRight && !mvLeft){
 			player.x += player.speed;
 		}
 		if(mvUp && !mvDown){
 			player.y -= player.speed;
-		}else
+		} else 
 		if(mvDown && !mvUp){
 			player.y += player.speed;
 		}
-
-		//verificando colizão
+		
 		for(var i in walls){
 			var wall = walls[i];
-			blockRectangle(player.wall);
+			blockRectangle(player,wall);
 		}
 	}
 	
-	//renderização (desenha na tela)
 	function render(){
-		ctx.clearRect(0,0,WIDTH, HEIGHT);
-        ctx.save();
-		for(var row in maze){ 		//procedimento que varre as linhas e colunas do labirinto
-			for(var column in maze){
-				var tile = maze[row][column]; //pega o elemento armazenado em uma determinada linha/coluna
-				if(tile === 1){ //se for um tijolo...
-					var x = column*tileSize; //...especifica as dimensões e a posição...
+		ctx.clearRect(0,0,WIDTH,HEIGHT);
+		ctx.save();
+		for(var row in maze){
+			for(var column in maze[row]){
+				var tile = maze[row][column];
+				if(tile === 1){
+					var x = column*tileSize;
 					var y = row*tileSize;
-					ctx.fillRect(x,y,tileSize,tileSize); //...e desenha na tela
+					ctx.fillRect(x,y,tileSize,tileSize);
 				}
 			}
 		}
-
-        //personagem
-        ctx.fillStyle = "#00f";
-        ctx.fillRect(player.x,player.y,player.width,player.height);
-        ctx.restore();
+		ctx.fillStyle = "#00f";
+		ctx.fillRect(player.x,player.y,player.width,player.height);
+		ctx.restore();
 	}
 	
 	function loop(){
@@ -168,6 +163,5 @@
 		render();
 		requestAnimationFrame(loop,cnv);
 	}
-	
 	requestAnimationFrame(loop,cnv);
 }());
