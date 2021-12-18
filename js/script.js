@@ -8,6 +8,13 @@
 	var mvLeft = mvUp = mvRight = mvDown = false;
 	
 	var tileSize = 64;
+	var tileSrcSize = 96;
+
+	var img = new Image();
+		img.src = "imagens/img.png";
+		img.addEventListener("load", function(){
+			requestAnimationFrame(loop,cnv);
+		},false);
 	
 	//array que armazenará os muros do labirinto
 	var walls = [];
@@ -185,11 +192,16 @@
 		for(var row in maze){
 			for(var column in maze[row]){
 				var tile = maze[row][column];
-				if(tile === 1){
-					var x = column*tileSize;
-					var y = row*tileSize;
-					ctx.fillRect(x,y,tileSize,tileSize);
-				}
+				var x = column*tileSize;
+				var y = row*tileSize;
+
+				ctx.drawImage(
+					img,
+					tile * tileSrcSize, 0, tileSrcSize, tileSrcSize,
+					x, y, tileSize, tileSize
+
+				);
+				
 			}
 		}
 		ctx.fillStyle = "#00f";
@@ -202,5 +214,4 @@
 		render();
 		requestAnimationFrame(loop,cnv);
 	}
-	requestAnimationFrame(loop,cnv);
 }());
