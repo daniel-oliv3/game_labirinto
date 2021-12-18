@@ -61,11 +61,26 @@
 		}
 	}
 
+	var T_WIDTH = maze[0].length * tileSize,
+		T_HEIGHT = maze.length * tileSize;
+
 	var cam = {
 		x: 0,
 		y: 0,
 		width: WIDTH,
 		height: HEIGHT,
+		innerLeftBoundary: function(){
+			return this.x + (this.width*0.25);
+		},
+		innerTopBoundary: function(){
+			return this.y + (this.height*0.25);
+		},
+		innerRightBoundary: function(){
+			return this.x + (this.width*0.75);
+		},
+		innerBottomBoundary: function(){
+			return this.y + (this.height*0.75);
+		},
 	}
 	
 	//função que verifica as colisões e ajusta a posição do personagem bloqueando-o 
@@ -145,11 +160,28 @@
 			var wall = walls[i];
 			blockRectangle(player,wall);
 		}
+
+		if(player.x < cam.innerLeftBoundary()){
+			cam.x = player.x - (cam.width * 0.25);
+		}
+		if(player.y < cam.innerTopBoundary()){
+			cam.y = player.y - (cam.height * 0.25);
+		}
+		if(player.x + player.width > cam.innerRightBoundary()){
+			cam.x = player.x + player.width - (cam.width * 0.75);  
+		}
+		if(player.y + player.height > cam.innerBottomBoundary()){
+			cam.y = player.y + player.height - (cam.height * 0.75);
+		}
+
+		cam.x = Math.max(0, Math.min(T_WIDTH - cam.width, cam.x));
+		cam.y = Math.max(0, Math.min(T_HEIGHT - cam.height, cam.y));
 	}
 	
 	function render(){
 		ctx.clearRect(0,0,WIDTH,HEIGHT);
 		ctx.save();
+		ctx.translate(-cam.x, -cam.y);
 		for(var row in maze){
 			for(var column in maze[row]){
 				var tile = maze[row][column];
