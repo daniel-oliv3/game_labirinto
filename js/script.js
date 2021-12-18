@@ -62,6 +62,25 @@
 		}
 	}
 
+	function blockRectangle(objA, objB){
+		var distX = (objA.x + objA.width/2) - (objB.x + objB.width/2);
+		var distY = (objA.y + objA.height/2) - (objB.y + objB.height/2);
+
+		var sumWidth = (objA.width + objB.width)/2;
+		var sumHeight = (objA.height + objB.height)/2;
+
+		if(Math.abs(distX) < sumWidth && Math.abs(distY) < sumHeight){
+			var overlapX = sumWidth - Math.abs(distX);
+			var overlapY = sumHeight - Math.abs(distY);
+
+			if(overlapX > overlapY){
+				objA.y = distY > 0 ? objA.y + overlapY : objA.y - overlapY;
+			}else {
+				objA.x = distX > 0 ? objA.x + overlapX : objA.x - overlapX;
+			}
+		}
+	}
+
 	window.addEventListener("keydown", keydownHandler, false);
 	window.addEventListener("keyup", keyupHandler, false);
 
@@ -127,18 +146,13 @@
 	function render(){
 		ctx.clearRect(0,0,WIDTH, HEIGHT);
         ctx.save();
-		//procedimento que varre as linhas e colunas do labirinto
-		for(var row in maze){
+		for(var row in maze){ 		//procedimento que varre as linhas e colunas do labirinto
 			for(var column in maze){
-				//pega o elemento armazenado em uma determinada linha/coluna
-				var tile = maze[row][column];
-				//se for um tijolo...
-				if(tile === 1){
-					//...especifica as dimensões e a posição...
-					var x = column*tileSize;
+				var tile = maze[row][column]; //pega o elemento armazenado em uma determinada linha/coluna
+				if(tile === 1){ //se for um tijolo...
+					var x = column*tileSize; //...especifica as dimensões e a posição...
 					var y = row*tileSize;
-					//...e desenha na tela
-					ctx.fillRect(x,y,tileSize,tileSize);
+					ctx.fillRect(x,y,tileSize,tileSize); //...e desenha na tela
 				}
 			}
 		}
